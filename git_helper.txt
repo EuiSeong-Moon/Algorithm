@@ -1,0 +1,8 @@
+git 간단한사용법
+
+git clone 주소
+git add 파일
+git commit -m "멘트"
+git push origin master
+
+이 때, git push와 pull위치가 같아야함. 즉 다른 곳에서 pull이나 push를했었다면 clone후 pull을 해서 맞추고 push작업을 진행해야 한다.
