@@ -66,6 +66,7 @@ int Navigate(int sx, int sy, int ex, int ey,int line)
 			}
 		}
 	}
+	delete map;
 	return count;
 }
 int main(void)
