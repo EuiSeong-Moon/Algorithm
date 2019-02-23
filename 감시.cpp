@@ -1,771 +1,338 @@
-#include <iostream>
-#include <vector>
+#include<iostream>
+#include<vector>
+
 using namespace std;
-
-
-int answer;
-class Cam {
+class Node {
 public:
-	int xpos;
-	int ypos;
-	int status;
+	pair<int, int> pos;
+	int camera;
 	int size;
 };
-int whatsize(int buf)
-{
-	if (buf == 2)
-		return 2;
-	else if (buf == 5)
-		return 1;
-	else
-		return 4;
-}
-void drawing(Cam c, int state,int** maps,int N,int M)
-{
-	int i = c.xpos;
-	int j = c.ypos;
-	switch (c.status)
-	{
-	//	int i = c.xpos, j=c.ypos;
-	case 1:
-		switch (state)
-		{
-		case 1:	//1
-		
-			j++;
-			if (j == M)
-				break;
-			while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j]==1) || (maps[i][j]==2) || (maps[i][j]==3) || (maps[i][j]==4) || (maps[i][j]==5))
-			{
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					j++;
-					if (j == M)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				j++;
-				if (j == M)
-					break;
-			}
-			break;
-		case 2:	//2
-			i++;
-			if (i == N)
-				break;
-			while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
+int map[8][8];
 
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					i++;
-					if (i == N)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				i++;
-				if (i == N)
-					break;
-			}
-			break;
-		case 3:	//3
-			j--;
-			if (j == -1)
-				break;
-			while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					j--;
-					if (j == -1)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				j--;
-				if (j == -1)
-					break;
-			}
-			break;
-		case 4:	//4
-			i--;
-			if (i == -1)
-				break;
-			while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					i--;
-					if (i == -1)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				i--;
-				if (i == -1)
-					break;
-			}
-			break;
+int check(int N,int M,vector<Node>& nodes,vector<int>& types) {
+	int buf_map[8][8];
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			buf_map[i][j] = map[i][j];
 		}
-		break;
-	case 2:
-		switch (state)
-		{
+	}
+	for (int i = 0; i < nodes.size(); i++) {
+		int nr = nodes.at(i).pos.first;
+		int nc = nodes.at(i).pos.second;
+		switch (nodes.at(i).camera) {
+			//감시망 체크
 		case 1:
-			j++;
-			if (j != M)
-			{
-				while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
+			switch (types.at(i)) {
+			case 1:
+				nc += 1;	//우측
+				while (nc < M && buf_map[nr][nc] != 6)
 				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j++;
-						if (j == M)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j++;
-					if (j == M)
-						break;
+					buf_map[nr][nc] = 10;
+					nc += 1;
 				}
-			}
-			j = c.ypos;
-			j--;
-			if (j == -1)
 				break;
-			while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					j--;
-					if (j == -1)
-						break;
-					continue;
+			case 2:
+				nr += 1;	//아래
+				while (nr < N && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr += 1;
 				}
-				maps[i][j] = 7;
-				j--;
-				if (j == -1)
-					break;
+				break;
+			case 3:
+				nc -= 1;	//좌측
+				while (nc >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nc -= 1;
+				}
+				break;
+			case 4:
+				nr -= 1;	//위
+				while (nr >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr -= 1;
+				}
+				break;
 			}
 			break;
 		case 2:
-			i++;
-			if (i != N)
-			{
-				while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
+			switch (types.at(i)) {
+			case 1:
+				nc += 1;	//우측
+				while (nc < M && buf_map[nr][nc] != 6)
 				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						i++;
-						if (i == N)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					i++;
-					if (i == N)
-						break;
+					buf_map[nr][nc] = 10;
+					nc += 1;
 				}
-			}
-			i = c.xpos;
-			i--;
-			if (i == -1)
+				nc = nodes.at(i).pos.second;
+				
+				nc -= 1;	//좌측
+				while (nc >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nc -= 1;
+				}
 				break;
-			while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					i--;
-					if (i == -1)
-						break;
-					continue;
+			case 2:
+				nr -= 1;	//위
+				while (nr >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr -= 1;
 				}
-				maps[i][j] = 7;
-				i--;
-				if (i == -1)
-					break;
-			}
-			break;
-		}
-		break;
-	case 3:
-		switch (state)
-		{
-		case 1:
-			j++;
-			if (j != M)
-			{
-				while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j++;
-						if (j == M)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j++;
-					if (j == M)
-						break;
+				nr = nodes.at(i).pos.first;
+				nr += 1;	//아래
+				while (nr < N && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr += 1;
 				}
-			}
-			j = c.ypos;
-			i--;
-			if (i == -1)
 				break;
-			while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					i--;
-					if (i == -1)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				i--;
-				if (i == -1)
-					break;
-			}
-			break;
-		case 2:
-			j++;
-			if (j != M)
-			{
-				while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j++;
-						if (j == M)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j++;
-					if (j == M)
-						break;
-				}
-			}
-			j = c.ypos;
-			i++;
-			if (i == N)
-				break;
-			while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					i++;
-					if (i == N)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				i++;
-				if (i == N)
-					break;
 			}
 			break;
 		case 3:
-			i++;
-			if (i != N)
-			{
-				while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						i++;
-						if (i == N)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					i++;
-					if (i == N)
-						break;
+			switch (types.at(i)) {
+			case 1:
+				nr -= 1;	//위
+				while (nr >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr -= 1;
 				}
-			}
-			i = c.xpos;
-			j--;
-			if (j == -1)
+				nr = nodes.at(i).pos.first;
+				nc += 1;	//우측
+				while (nc < M && buf_map[nr][nc] != 6)
+				{
+					buf_map[nr][nc] = 10;
+					nc += 1;
+				}
 				break;
-			while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
+			case 2:
+				nc += 1;	//우측
+				while (nc < M && buf_map[nr][nc] != 6)
 				{
-					j--;
-					if (j == -1)
-						break;
-					continue;
+					buf_map[nr][nc] = 10;
+					nc += 1;
 				}
-				maps[i][j] = 7;
-				j--;
-				if (j == -1)
-					break;
+				nc = nodes.at(i).pos.second;
+				nr += 1;	//아래
+				while (nr < N && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr += 1;
+				}
+				break;
+			case 3:
+				nr += 1;	//아래
+				while (nr < N && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr += 1;
+				}
+				nr = nodes.at(i).pos.first;
+				nc -= 1;	//좌측
+				while (nc >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nc -= 1;
+				}
+				break;
+			case 4:
+				nr -= 1;	//위
+				while (nr >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr -= 1;
+				}
+				nr = nodes.at(i).pos.first;
+				nc -= 1;	//좌측
+				while (nc >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nc -= 1;
+				}
+				break;
 			}
 			break;
 		case 4:
-			j--;
-			if (j != -1)
-			{
-				while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j--;
-						if (j == -1)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j--;
-					if (j == -1)
-						break;
+			switch (types.at(i)) {
+			case 1:
+				nr -= 1;	//위
+				while (nr >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr -= 1;
 				}
-			}
-			j = c.ypos;
-			i--;
-			if (i == -1)
+				nr = nodes.at(i).pos.first;
+				nc += 1;	//우측
+				while (nc < M && buf_map[nr][nc] != 6)
+				{
+					buf_map[nr][nc] = 10;
+					nc += 1;
+				}
+				nc = nodes.at(i).pos.second;
+				nc -= 1;	//좌측
+				while (nc >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nc -= 1;
+				}
 				break;
-			while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					i--;
-					if (i == -1)
-						break;
-					continue;
+			case 2:
+				nr -= 1;	//위
+				while (nr >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr -= 1;
 				}
-				maps[i][j] = 7;
-				i--;
-				if (i == -1)
-					break;
-			}
-			break;
-		}
-		break;
-	case 4:
-		switch (state)
-		{
-		case 1:
-			j++;
-			if (j != M)
-			{
-				while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
+				nr = nodes.at(i).pos.first;
+				nc += 1;	//우측
+				while (nc < M && buf_map[nr][nc] != 6)
 				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j++;
-						if (j == M)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j++;
-					if (j == M)
-						break;
+					buf_map[nr][nc] = 10;
+					nc += 1;
 				}
-			}
-			j = c.ypos;
-			j--;
-			if (j != -1)
-			{
-				while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j--;
-						if (j == -1)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j--;
-					if (j == -1)
-						break;
+				nc = nodes.at(i).pos.second;
+				nr += 1;	//아래
+				while (nr < N && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr += 1;
 				}
-			}
-			j = c.ypos;
-			i--;
-			if (i != -1)
-			{
-				while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						i--;
-						if (i == -1)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					i--;
-					if (i == -1)
-						break;
-				}
-			}
-			break;
-		case 2:
-			j++;
-			if (j != M)
-			{
-				while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j++;
-						if (j == M)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j++;
-					if (j == M)
-						break;
-				}
-			}
-			j = c.ypos;
-			i++;
-			if (i != N)
-			{
-				while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						i++;
-						if (i == N)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					i++;
-					if (i == N)
-						break;
-				}
-			}
-			i = c.xpos;
-			i--;
-			if (i == -1)
 				break;
-			while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
+			case 3:
+				nc += 1;	//우측
+				while (nc < M && buf_map[nr][nc] != 6)
 				{
-					i--;
-					if (i == -1)
-						break;
-					continue;
+					buf_map[nr][nc] = 10;
+					nc += 1;
 				}
-				maps[i][j] = 7;
-				i--;
-				if (i == -1)
-					break;
-			}
-			break;
-		case 3:
-			j++;
-			if (j != M)
-			{
-				while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j++;
-						if (j == M)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j++;
-					if (j == M)
-						break;
+				nc = nodes.at(i).pos.second;
+				nr += 1;	//아래
+				while (nr < N && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr += 1;
 				}
-			}
-			j = c.ypos;
-			i++;
-			if (i != N)
-			{
-				while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						i++;
-						if (i == N)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					i++;
-					if (i == N)
-						break;
+				nr = nodes.at(i).pos.first;
+				nc -= 1;	//좌측
+				while (nc >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nc -= 1;
 				}
-			}
-			i = c.xpos;
-			j--;
-			if (j != -1)
-			{
-				while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j--;
-						if (j == -1)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j--;
-					if (j == -1)
-						break;
-				}
-			}
-			j = c.ypos;
-			break;
-		case 4:
-			i++;
-			if (i != N)
-			{
-				while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						i++;
-						if (i == N)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					i++;
-					if (i == N)
-						break;
-				}
-			}
-			i = c.xpos;
-			j--;
-			if (j != -1)
-			{
-				while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						j--;
-						if (j == -1)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					j--;
-					if (j == -1)
-						break;
-				}
-			}
-			j = c.ypos;
-			i--;
-			if (i != -1)
-			{
-				while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-
-					if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-					{
-						i--;
-						if (i == -1)
-							break;
-						continue;
-					}
-					maps[i][j] = 7;
-					i--;
-					if (i == -1)
-						break;
-				}
-			}
-			break;
-		}
-		break;
-	case 5:
-		j++;
-		if (j != M)
-		{
-			while (j < M && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					j++;
-					if (j == M)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				j++;
-				if (j == M)
-					break;
-			}
-		}
-		j = c.ypos;
-		i++;
-		if (i != N)
-		{
-			while (i < N && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					i++;
-					if (i == N)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				i++;
-				if (i == N)
-					break;
-			}
-		}
-		i = c.xpos;
-		j--;
-		if (j != -1)
-		{
-			while (j >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-
-				if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-				{
-					j--;
-					if (j == -1)
-						break;
-					continue;
-				}
-				maps[i][j] = 7;
-				j--;
-				if (j == -1)
-					break;
-			}
-		}
-		j = c.ypos;
-		i--;
-		if (i == -1)
-			break;
-		while (i >= 0 && (maps[i][j] == 0) || (maps[i][j] == 7) || (maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-		{
-
-			if ((maps[i][j] == 1) || (maps[i][j] == 2) || (maps[i][j] == 3) || (maps[i][j] == 4) || (maps[i][j] == 5))
-			{
-				i--;
-				if (i == -1)
-					break;
-				continue;
-			}
-			maps[i][j] = 7;
-			i--;
-			if (i == -1)
 				break;
+			case 4:
+				nr -= 1;	//위
+				while (nr >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr -= 1;
+				}
+				nr = nodes.at(i).pos.first;
+				nr += 1;	//아래
+				while (nr < N && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nr += 1;
+				}
+				nr = nodes.at(i).pos.first;
+				nc -= 1;	//좌측
+				while (nc >= 0 && buf_map[nr][nc] != 6) {
+					buf_map[nr][nc] = 10;
+					nc -= 1;
+				}
+				break;
+			}
+			break;
+		case 5:
+			nc += 1;	//우측
+			while (nc < M && buf_map[nr][nc] != 6)
+			{
+				buf_map[nr][nc] = 10;
+				nc += 1;
+			}
+			nc = nodes.at(i).pos.second;
+			nr -= 1;	//위
+			while (nr >= 0 && buf_map[nr][nc] != 6) {
+				buf_map[nr][nc] = 10;
+				nr -= 1;
+			}
+			nr = nodes.at(i).pos.first;
+			nr += 1;	//아래
+			while (nr < N && buf_map[nr][nc] != 6) {
+				buf_map[nr][nc] = 10;
+				nr += 1;
+			}
+			nr = nodes.at(i).pos.first;
+			nc -= 1;	//좌측
+			while (nc >= 0 && buf_map[nr][nc] != 6) {
+				buf_map[nr][nc] = 10;
+				nc -= 1;
+			}
+			break;
 		}
-		i = c.xpos;
-		break;
 	}
+	int count = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (buf_map[i][j] == 0)
+				count += 1;
+		}
+	}
+	return count;
 }
-void find_answer(vector<Cam> cams,int flag,int **maps,int N,int M)
-{
-	for (int i = 0; i < cams.at(flag).size; i++)
+void recur(int sz, vector<Node>& nodes, vector<int>& types,int& answer,int N,int M) {
+	if (sz == nodes.size())
 	{
-		int **n_maps = new int*[N];
-		for (int i = 0; i < N; i++)
-			n_maps[i] = new int[M];
-		for (int i = 0; i < N; i++)
-		{
-			for (int j = 0; j < M; j++)
-				n_maps[i][j] = maps[i][j];
-		}
-		drawing(cams.at(flag), i+1,n_maps,N,M);
-		if(flag!=0)
-			find_answer(cams, flag - 1,n_maps,N,M);
-		else
-		{
-			int count = 0;
-			for (int i = 0; i < N; i++)
-			{
-				for (int j = 0; j < M; j++)
-				{
-					if (n_maps[i][j] == 0)
-						count++;
-				}
-			}
-			if (count < answer)
-				answer = count;
+		int current = check(N,M,nodes,types);
+		if (answer > current)
+			answer = current;
+	}
+	else {
+		for (int i = 1; i<=nodes.at(sz).size; i++) {
+			types.push_back(i);
+			recur(sz + 1, nodes, types,answer,N,M);
+			types.pop_back();
 		}
 	}
 }
-int main(void)
-{
-	int M, N, buf;
-	vector<Cam> Cams;
+int main(void) {
+	int N, M,buf;
+	vector<Node> nodes;
+	vector<int> types;
 	cin >> N >> M;
-	int **maps = new int*[N];
-	for (int i = 0; i < N; i++)
-	{
-		maps[i] = new int[M];
-	}
-	answer = M*N;
-	for (int i = 0; i < N; i++)
-	{
+	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
 			cin >> buf;
-			maps[i][j] = buf;
-			if (buf != 0 && buf!=6)
-			{
-				Cam c;
-				c.xpos = i;	c.ypos = j;	c.status = buf;	c.size = whatsize(buf);
-				Cams.push_back(c);
+			Node p;
+			switch (buf) {
+			case 1:
+				p.pos.first = i;	p.pos.second = j;	p.camera = 1;	p.size = 4;
+				nodes.push_back(p);
+				break;
+			case 2:
+				
+				p.pos.first = i;	p.pos.second = j;	p.camera = 2;	p.size = 2;
+				nodes.push_back(p);
+				break;
+			case 3:
+				p.pos.first = i;	p.pos.second = j;	p.camera = 3;	p.size = 4;
+				nodes.push_back(p);
+				break;
+			case 4:
+				p.pos.first = i;	p.pos.second = j;	p.camera = 4;	p.size = 4;
+				nodes.push_back(p);
+				break;
+			case 5:
+				p.pos.first = i;	p.pos.second = j;	p.camera = 5;	p.size = 1;
+				nodes.push_back(p);
+				break;
 			}
+			map[i][j] = buf;
 		}
 	}
-	if (Cams.size() == 0)
-	{
+	int answer = 1000;
+	if (nodes.size() > 0) {
+		for (int i = 1; i <= nodes.at(0).size; i++) {
+			types.push_back(i);
+			recur(1,nodes,types,answer,N,M);
+			types.pop_back();
+		}
+	}
+	else {
 		int count = 0;
-		for (int i = 0; i < N; i++)
-		{
-			for (int j = 0; j < M; j++)
-			{
-				if (maps[i][j] == 0)
-					count++;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (map[i][j] == 0)
+					count += 1;
 			}
 		}
-		cout << count << endl;
+		answer = count;
 	}
-	else
-	{
-		find_answer(Cams, Cams.size() - 1, maps, N, M);
-		cout << answer << endl;
-	}
+	cout << answer << endl;
 	return 0;
 }
